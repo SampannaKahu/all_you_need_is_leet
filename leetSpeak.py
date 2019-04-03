@@ -56,10 +56,18 @@ leetMap = {'a': 'CYRILLIC SMALL LETTER A',
            'Z': 'CHEROKEE LETTER NO'
         }
 
-def word2Leet(word):
+def word2Leet(word, num):
+    if (num < 0):
+        return word
+    
     leetWord = ''
-    for i in range(len(word)):
+    changeLen = min(len(word), num)
+    for i in range(changeLen):
         leetCode = leetMap[word[i]]
         leetChar = lookup(leetCode)
         leetWord += leetChar
+    for i in range(changeLen, len(word)):
+        leetWord += word[i]
     return leetWord
+
+
