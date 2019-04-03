@@ -11,19 +11,10 @@ from PerspectiveServiceClient import PerspectiveAPIClient
 API_KEY = 'AIzaSyBG_1zyVQwCKnqFoPyz7IjAKCS0xu_KXG0'
 
 # Initialize the service client
-service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores.ini')
-
+service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
+# Initialize tokenizer.
 tknzr = TweetTokenizer(preserve_case=False, reduce_len=True, strip_handles=True)
 
-
-# scores1 = service_client.get_toxicity_of_words('Hello world.'.split(' '))
-# print(scores1)
-#
-# scores2 = service_client.get_toxicity_of_words('Hello dear world.'.split(' '))
-# print(scores2)
-#
-# score = service_client.get_toxicity_for_sentence('Hello world.')
-# print(score)
 
 def get_word_toxicities(sentence):
     # words = sentence.split(' ')
@@ -36,7 +27,7 @@ def get_word_toxicities(sentence):
 
 
 with open('data/NLP_CSS_2016.csv') as input_file:
-    with open('data/NLP_CSS_2016_word_level_toxicities_v2.csv', mode='w') as output_file:
+    with open('data/NLP_CSS_2016_word_level_toxicities.csv', mode='w') as output_file:
         output_fieldnames = ['tweets', 'word_level_score_dict']
         writer = csv.DictWriter(output_file, fieldnames=output_fieldnames)
         writer.writeheader()

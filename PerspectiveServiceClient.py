@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import atexit
-from configparser import ConfigParser
+import json
 
 from googleapiclient import discovery
 from googleapiclient.errors import HttpError
@@ -12,7 +12,6 @@ from ratelimit import limits, sleep_and_retry
 @sleep_and_retry
 @limits(calls=8, period=1)
 def call_api(service, analyze_request):
-    # print('Calling perspective API.')
     try:
         return service.comments().analyze(body=analyze_request).execute()
     except HttpError:
@@ -24,10 +23,10 @@ class PerspectiveAPIClient:
     def __init__(self, api_key=None, cache_file=None):
         self.cache_file = cache_file
         self.service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=api_key)
-        parser = ConfigParser()
-        parser.read(self.cache_file)
-        self.word_toxicity_cache = parser['word_toxicity_cache']
-        self.sentence_toxicity_cache = parser['sentence_toxicity_cache']
+
+        with open(cache_file) as my_file:
+            contents = my_file.read()
+            self.word_toxicity_cache = json.loads(contents)
         atexit.register(self.cleanup)
 
     def get_toxicity_of_words(self, list_of_words=None):
@@ -37,6 +36,7 @@ class PerspectiveAPIClient:
         :return: Dict of the lower-cased original words as keys and the respective toxicity scores as values.
         """
 
+        # Some sanity checks.
         if not list_of_words or not isinstance(list_of_words, list) or len(list_of_words) == 0:
             raise ValueError('Please pass a valid list of words.')
 
@@ -63,9 +63,6 @@ class PerspectiveAPIClient:
         if not capitalized_list_of_words:
             return cache_toxicities
 
-        # Get word count before hitting Perspective API.
-        # input_word_count = len(capitalized_list_of_words)
-
         capitalized_sentence = '. '.join(capitalized_list_of_words)
 
         analyze_request = {
@@ -81,12 +78,6 @@ class PerspectiveAPIClient:
         except TypeError:
             print('Type error encountered. Response:', response)
             return {}
-
-        # output_count = len(span_scores)
-
-        # if input_word_count != output_count:
-        #     raise ValueError(
-        #         "Something went wrong. Input word count does not match the toxicity score count in response.")
 
         # Dict comprehension
         response_toxicities = {capitalized_sentence[span_score['begin']: span_score['end']].strip().strip('.').lower():
@@ -108,12 +99,6 @@ class PerspectiveAPIClient:
         if not sentence or not isinstance(sentence, str) or not sentence.strip():
             raise ValueError('Please pass a valid sentence.')
 
-        if '=' in sentence:
-            raise ValueError('Equals symbol not allowed in sentence.')
-
-        if sentence in self.sentence_toxicity_cache:
-            return float(self.sentence_toxicity_cache[sentence])
-
         analyze_request = {
             'comment': {'text': sentence},
             'requestedAttributes': {'TOXICITY': {}},
@@ -124,8 +109,6 @@ class PerspectiveAPIClient:
 
         toxicity_score = response['attributeScores']['TOXICITY']['summaryScore']['value']
 
-        self.sentence_toxicity_cache[sentence] = str(toxicity_score)
-
         return toxicity_score
 
     def cleanup(self):
@@ -134,9 +117,6 @@ class PerspectiveAPIClient:
         """
 
         print('Attempting safe shutdown of PerspectiveServiceClient...')
-        parser = ConfigParser()
-        parser['word_toxicity_cache'] = dict(self.word_toxicity_cache)
-        parser['sentence_toxicity_cache'] = dict(self.sentence_toxicity_cache)
         with open(self.cache_file, mode='w') as cache_file_path:
-            parser.write(cache_file_path)
+            cache_file_path.write(json.dumps(self.word_toxicity_cache))
         print('PerspectiveServiceClient successfully closed.')
