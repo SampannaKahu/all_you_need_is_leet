@@ -18,7 +18,7 @@ originalTweets = originalFile.read().splitlines()
 perturbedTweets = perturbedFile.read().splitlines()
 
 if(len(originalTweets) != len(perturbedTweets)):
-    raise Exception('Files must have same number of tweets!')
+    raise Exception('Both the files must have same number of tweets!')
 
 totalOrginalScore = 0
 totalPerturbedScore = 0
