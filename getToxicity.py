@@ -33,18 +33,26 @@ outputFileName = args.input + "_toxicity"
 outputFile = open(outputFileName, 'w')
 
 lines = inputFile.read().splitlines()
-
+num = 1
+exNum = 0
 for line in lines:
+    if(num % 500 == 0):
+        print(str(num) + " tweets processed\n")
+    num = num + 1
     text = line.split(',')[1]
     analyze_request = {
       'comment': { 'text': text },
       'requestedAttributes': {'TOXICITY': {}}
     }
     
-    response = call_api(analyze_request)
-    toxicity = response['attributeScores']['TOXICITY']['summaryScore']['value']
-    text_toxicity = str(toxicity) + "," + text
-    outputFile.write("%s\n" % text_toxicity)
-    
+    try:
+        response = call_api(analyze_request)
+        toxicity = response['attributeScores']['TOXICITY']['summaryScore']['value']
+        text_toxicity = str(toxicity) + "," + text
+        outputFile.write("%s\n" % text_toxicity)
+    except:
+        exNum = exNum + 1
+        print(str(exNum) + " exception(s) occurred:")
+        
 inputFile.close()
 outputFile.close()
