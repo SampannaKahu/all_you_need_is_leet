@@ -27,20 +27,15 @@ lines = inputFile.read().splitlines()
 num = 1
 exNum = 0
 # Initialize the service client
-service_client = PerspectiveAPIClient(api_key=API_KEY)
+service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file="cache/word_toxicity_scores_v2.json")
 
 for line in lines:
     if(num % 500 == 0):
         print(str(num) + " tweets processed\n")
     num = num + 1
     text = line.split(',')[1]
-    analyze_request = {
-      'comment': { 'text': text },
-      'requestedAttributes': {'TOXICITY': {}}
-    }
     
     try:
-        response = call_api(analyze_request)
         toxicity = service_client.get_toxicity_for_sentence(sentence=text)
         text_toxicity = str(toxicity) + "," + text
         outputFile.write("%s\n" % text_toxicity)
