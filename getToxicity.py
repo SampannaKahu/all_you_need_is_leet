@@ -7,25 +7,16 @@ Created on Tue Mar 26 21:22:27 2019
 """
 
 from argparse import ArgumentParser
-from googleapiclient import discovery
-from ratelimit import limits, sleep_and_retry
-import json
+
+from PerspectiveServiceClient import PerspectiveAPIClient
 
 API_KEY='AIzaSyBU2AZtVmel0wV_NMhPTFKmChVHxb6_30Q'
-
-# Generates API client object dynamically based on service name and version.
-service = discovery.build('commentanalyzer', 'v1alpha1', developerKey=API_KEY)
 
 parser = ArgumentParser()
 parser.add_argument("-i", "--input", dest="input",
                     help="FILE to read", metavar="FILE")
 
 args = parser.parse_args()
-
-@sleep_and_retry
-@limits(calls=6, period=1)
-def call_api(analyze_request):
-    return service.comments().analyze(body=analyze_request).execute()
 
 # Open a file
 inputFile = open(args.input, "r")
@@ -35,6 +26,9 @@ outputFile = open(outputFileName, 'w')
 lines = inputFile.read().splitlines()
 num = 1
 exNum = 0
+# Initialize the service client
+service_client = PerspectiveAPIClient(api_key=API_KEY)
+
 for line in lines:
     if(num % 500 == 0):
         print(str(num) + " tweets processed\n")
@@ -47,7 +41,7 @@ for line in lines:
     
     try:
         response = call_api(analyze_request)
-        toxicity = response['attributeScores']['TOXICITY']['summaryScore']['value']
+        toxicity = service_client.get_toxicity_for_sentence(sentence=text)
         text_toxicity = str(toxicity) + "," + text
         outputFile.write("%s\n" % text_toxicity)
     except:
