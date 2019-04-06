@@ -33,7 +33,7 @@ for line in lines:
     if(num % 500 == 0):
         print(str(num) + " tweets processed\n")
     num = num + 1
-    text = line.split(',')[1]
+    text = ",".join(line.split(',')[1:])
     
     try:
         toxicity = service_client.get_toxicity_for_sentence(sentence=text)
