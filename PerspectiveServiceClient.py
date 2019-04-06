@@ -3,6 +3,7 @@
 
 import atexit
 import json
+import copy
 
 from googleapiclient import discovery
 from googleapiclient.errors import HttpError
@@ -38,7 +39,7 @@ class PerspectiveAPIClient:
 
         my_dict = {}
         for idx, word in enumerate(stripped_words):
-            stripped_words_copy = stripped_words
+            stripped_words_copy = copy.deepcopy(stripped_words)
             del stripped_words_copy[idx]
             my_dict[word] = original_toxicity - self.get_toxicity_for_sentence(sentence=' '.join(stripped_words_copy))
 

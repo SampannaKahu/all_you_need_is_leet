@@ -13,7 +13,7 @@ API_KEY = 'AIzaSyBG_1zyVQwCKnqFoPyz7IjAKCS0xu_KXG0'
 # Initialize the service client
 service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
 # Initialize tokenizer.
-tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=True)
+tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=False)
 
 
 def get_word_toxicities(sentence):
@@ -26,16 +26,15 @@ def get_word_toxicities(sentence):
     return my_dict
 
 
-with open('data/NLP_CSS_2016.txt') as input_file:
+with open('data/NLP_CSS_2016.txt_toxicity') as input_file:
     with open('data/NLP_CSS_2016_word_level_toxicities_v2.csv', mode='w') as output_file:
         output_fieldnames = ['tweets', 'word_level_score_dict']
         writer = csv.DictWriter(output_file, fieldnames=output_fieldnames)
         writer.writeheader()
-        # csv_reader = csv.DictReader(input_file, fieldnames=['tweets'])
         tweet = input_file.readline()
         while tweet:
             original_toxicity = float(tweet.split(',')[0])
-            tweet = tweet[2:]
+            tweet = ','.join(tweet.split(',')[1:])
             words = tknzr.tokenize(tweet)
             try:
                 writer.writerow({
@@ -47,3 +46,4 @@ with open('data/NLP_CSS_2016.txt') as input_file:
             except ValueError:
                 print('Error for tweet: ', tweet)
             tweet = input_file.readline()
+            print('Processing...')
