@@ -29,6 +29,21 @@ class PerspectiveAPIClient:
             self.word_toxicity_cache = json.loads(contents)
         atexit.register(self.cleanup)
 
+    def get_toxicity_of_words_v2(self, list_of_words=None, original_toxicity=0):
+        # Some sanity checks.
+        if not list_of_words or not isinstance(list_of_words, list) or len(list_of_words) == 0:
+            raise ValueError('Please pass a valid list of words.')
+
+        stripped_words = [x.strip().strip('.').lower() for x in list_of_words if x.strip().strip('.').lower()]
+
+        my_dict = {}
+        for idx, word in enumerate(stripped_words):
+            stripped_words_copy = stripped_words
+            del stripped_words_copy[idx]
+            my_dict[word] = original_toxicity - self.get_toxicity_for_sentence(sentence=' '.join(stripped_words_copy))
+
+        return my_dict
+
     def get_toxicity_of_words(self, list_of_words=None):
         """
         Gets word-level toxicity using Perspective API.
