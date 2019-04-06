@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from unicodedata import *
 
-
 leetMap = {'a': 'CYRILLIC SMALL LETTER A',
            'A': 'CYRILLIC CAPITAL LETTER A',
            'b': 'CYRILLIC CAPITAL LETTER SOFT SIGN',
@@ -54,20 +53,21 @@ leetMap = {'a': 'CYRILLIC SMALL LETTER A',
            'Y': 'CYRILLIC CAPITAL LETTER STRAIGHT U',
            'z': 'LATIN LETTER SMALL CAPITAL Z',
            'Z': 'CHEROKEE LETTER NO'
-        }
+           }
+
 
 def word2Leet(word, num):
     if (num < 0):
         return word
-    
+
     leetWord = ''
     changeLen = min(len(word), num)
     for i in range(changeLen):
+        if word[i] not in leetMap:
+            continue
         leetCode = leetMap[word[i]]
         leetChar = lookup(leetCode)
         leetWord += leetChar
     for i in range(changeLen, len(word)):
         leetWord += word[i]
     return leetWord
-
-
