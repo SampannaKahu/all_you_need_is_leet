@@ -33,11 +33,12 @@ for line in lines:
     if(num % 500 == 0):
         print(str(num) + " tweets processed\n")
     num = num + 1
-    text = ",".join(line.split(',')[1:])
+    text = ",".join(line.split(',')[2:])
+    lineNum = line.split(',')[0]
     
     try:
         toxicity = service_client.get_toxicity_for_sentence(sentence=text)
-        text_toxicity = str(toxicity) + "," + text
+        text_toxicity = str(lineNum) + "," + str(toxicity) + "," + text
         outputFile.write("%s\n" % text_toxicity)
     except:
         exNum = exNum + 1
