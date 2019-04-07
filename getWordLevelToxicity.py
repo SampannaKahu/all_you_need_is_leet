@@ -26,8 +26,8 @@ def get_word_toxicities(sentence):
     return my_dict
 
 
-with open('data/NAACL_SRW_2016.txt_toxicity') as input_file:
-    with open('data/NAACL_SRV_2016_word_level_toxicities_v2.csv', mode='w') as output_file:
+with open('data/NAACL_SRW_2016.txt_toxicity_2') as input_file:
+    with open('data/NAACL_SRV_2016_word_level_toxicities_v2_2.csv', mode='w') as output_file:
         output_fieldnames = ['tweets', 'word_level_score_dict']
         writer = csv.DictWriter(output_file, fieldnames=output_fieldnames)
         writer.writeheader()
