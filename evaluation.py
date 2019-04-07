@@ -17,24 +17,33 @@ perturbedFile = open(args.perturbed, "r")
 originalTweets = originalFile.read().splitlines()
 perturbedTweets = perturbedFile.read().splitlines()
 
-if(len(originalTweets) != len(perturbedTweets)):
-    raise Exception('Both the files must have same number of tweets!')
 
 totalOrginalScore = 0
 totalPerturbedScore = 0
 
-for i in range(len(originalTweets)):
+totalEvals = 0
+
+for i in range(len(perturbedTweets)):
     
-    oScore = originalTweets[i].split(',')[0]
-    pScore = perturbedTweets[i].split(',')[0]
+    pLineNumber = perturbedTweets[i].split(',')[0]
+
+    oScore = originalTweets[int(pLineNumber) - 1].split(',')[1]
+    if(float(oScore) < 0.8):
+        continue
+    pScore = perturbedTweets[i].split(',')[1]
+    
+    totalEvals += 1
     
     totalOrginalScore += float(oScore)
     totalPerturbedScore += float(pScore)
 
-print("Average original toxicity score: {}\n".format(totalOrginalScore/len(originalTweets)))
-print("Average perturbed toxicity score: {}\n".format(totalPerturbedScore/len(originalTweets)))
 
-print("Average change in toxicity score: {}\n".format((totalOrginalScore - totalPerturbedScore)/len(originalTweets)))
+print("Total Evaluations: {}\n".format(totalEvals))
+
+print("Average original toxicity score: {}\n".format(totalOrginalScore/totalEvals))
+print("Average perturbed toxicity score: {}\n".format(totalPerturbedScore/totalEvals))
+
+print("Average change in toxicity score: {}\n".format((totalOrginalScore - totalPerturbedScore)/totalEvals))
 
 
 
