@@ -8,7 +8,7 @@ from nltk.tokenize import TweetTokenizer
 
 from PerspectiveServiceClient import PerspectiveAPIClient
 
-API_KEY = 'AIzaSyBG_1zyVQwCKnqFoPyz7IjAKCS0xu_KXG0'
+API_KEY = 'AIzaSyBU2AZtVmel0wV_NMhPTFKmChVHxb6_30Q'
 
 # Initialize the service client
 service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
@@ -25,25 +25,29 @@ def get_word_toxicities(sentence):
         my_dict = {**my_dict, **service_client.get_toxicity_of_words(chunk)}
     return my_dict
 
-
-with open('data/NAACL_SRW_2016.txt_toxicity') as input_file:
-    with open('data/NAACL_SRV_2016_word_level_toxicities_v2.csv', mode='w') as output_file:
-        output_fieldnames = ['tweets', 'word_level_score_dict']
+i = 0
+with open('data/mondal_json_toxicity') as input_file:
+    with open('data/mondal_json_toxicity.csv', mode='w') as output_file:
+        output_fieldnames = ['tweets', 'word_level_score_dict', 'score']
         writer = csv.DictWriter(output_file, fieldnames=output_fieldnames)
         writer.writeheader()
         tweet = input_file.readline()
         while tweet:
-            original_toxicity = float(tweet.split(',')[0])
-            tweet = ','.join(tweet.split(',')[1:])
+            i += 1
+            if (i % 500 == 0):
+                print(str(i) + " processed")
+            original_toxicity = float(tweet.split(',')[1])
+            tweet = ','.join(tweet.split(',')[2:])
             words = tknzr.tokenize(tweet)
             try:
                 writer.writerow({
                     'tweets': tweet,
                     'word_level_score_dict': json.dumps(
                         service_client.get_toxicity_of_words_v2(list_of_words=words,
-                                                                original_toxicity=original_toxicity))
+                                                                original_toxicity=original_toxicity)),
+                            'score': original_toxicity
                 })
             except ValueError:
                 print('Error for tweet: ', tweet)
             tweet = input_file.readline()
-            print('Processing...')
+            #print('Processing...')

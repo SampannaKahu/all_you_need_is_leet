@@ -28,8 +28,8 @@ for i in range(len(perturbedTweets)):
     pLineNumber = perturbedTweets[i].split(',')[0]
 
     oScore = originalTweets[int(pLineNumber) - 1].split(',')[1]
-    if(float(oScore) < 0.8):
-        continue
+#    if(float(oScore) < 0.5):
+#        continue
     pScore = perturbedTweets[i].split(',')[1]
     
     totalEvals += 1
