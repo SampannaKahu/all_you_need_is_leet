@@ -1,36 +1,53 @@
 # -*- coding: utf-8 -*-
-
-originalFile = open("data/NAACL_SRW_2016.txt_toxicity", "r")
-
-scores = []
-
-originalTweets = originalFile.read().splitlines()
-
-for i in range(len(originalTweets)):
-    
-    oScore = float(originalTweets[i].split(',')[0])
-    scores.append(oScore)
-
-import matplotlib.pyplot as plt
-
-
-def count_range_in_list(li, min):
-	ctr = 0
-	for x in li:
-		if (x > min):
-			ctr += 1
-	return ctr
-
 import numpy as np
-docs = np.arange(0.0, 1.05, 0.05)
+import matplotlib.pyplot as plt
+import os
+import evaluation
 
-counts = []
-for v in docs:
-    counts.append(count_range_in_list(scores, v))
+def dataDistribution():
+    originalFile = open("data/mondal_json_v2", "r")
 
-plt.xticks(docs)
-plt.xlabel("Toxicity score threshold")
-plt.ylabel("Number of tweets")
-
-plt.plot(docs, counts, marker='o', color='b')
-plt.show()
+    scores = []
+    
+    originalTweets = originalFile.read().splitlines()
+    
+    for i in range(len(originalTweets)):
+        
+        oScore = float(originalTweets[i].split(',')[1])
+        scores.append(oScore)
+    
+    def count_range_in_list(li, min):
+    	ctr = 0
+    	for x in li:
+    		if (x > min):
+    			ctr += 1
+    	return ctr
+    
+   
+    docs = np.arange(0.0, 1.05, 0.1)
+    
+    counts = []
+    for v in docs:
+        counts.append(count_range_in_list(scores, v))
+    
+    plt.xticks(docs)
+    plt.xlabel("Toxicity score threshold")
+    plt.ylabel("Number of tweets")
+    
+    plt.plot(docs, counts, marker='o', color='b')
+    plt.show()
+    
+def parameterVis():
+    originalFile = "mondal_json_v2"
+    scores = []
+    for i in range(1,7):
+        pFile = "mondal_json_" + str(i) + "c_leetspeak_toxicity"
+        scores.append(evaluation.evaluation(originalFile, pFile))
+    print(scores)
+    docs = np.arange(1, 7, 1)
+    plt.xticks(docs)
+    plt.xlabel("Number of characters changed")
+    plt.ylabel("Mean decrease in toxicity score")
+    plt.plot(docs, scores, marker='o', color='b')
+    plt.show()
+    
