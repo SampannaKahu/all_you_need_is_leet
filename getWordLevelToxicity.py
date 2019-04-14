@@ -7,8 +7,9 @@ import json
 from nltk.tokenize import TweetTokenizer
 
 from PerspectiveServiceClient import PerspectiveAPIClient
+import CredentialManager
 
-API_KEY = 'AIzaSyBU2AZtVmel0wV_NMhPTFKmChVHxb6_30Q'
+API_KEY = CredentialManager.get_my_api_key()
 
 # Initialize the service client
 service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')

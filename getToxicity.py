@@ -7,10 +7,11 @@ Created on Tue Mar 26 21:22:27 2019
 """
 
 from argparse import ArgumentParser
+import CredentialManager
 
 from PerspectiveServiceClient import PerspectiveAPIClient
 
-API_KEY='AIzaSyBU2AZtVmel0wV_NMhPTFKmChVHxb6_30Q'
+API_KEY = CredentialManager.get_my_api_key()
 
 parser = ArgumentParser()
 parser.add_argument("-i", "--input", dest="input",
