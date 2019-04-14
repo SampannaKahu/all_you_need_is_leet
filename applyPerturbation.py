@@ -106,7 +106,7 @@ def insertZwsp():
                 if (perturbed_tweet == tweet):
                     countSame += 1
                     print(str(countSame) + " " + tweet + " unchanged")
-                output_file.write(str(i) + ',0,' + perturbed_tweet + '\n')
+                output_file.write(str(i) + ',0,' + perturbed_tweet)
                 i += 1
 
 
