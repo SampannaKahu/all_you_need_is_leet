@@ -56,22 +56,35 @@ def parameterVis():
 def bucketVis():
     o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_nows_toxicity")
     
-    X = ['Non Toxic','Maybe Toxic','Toxic']
     
     A = [(o1/oTotal)*100, (o2/oTotal)*100, (o3/oTotal)*100]
     B = [(p1/pTotal)*100, (p2/pTotal)*100, (p3/pTotal)*100]
     
-    def subcategorybar(X, vals, width=0.8):
-        n = len(vals)
-        _X = np.arange(len(X))
-        for i in range(n):
-            plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
-                    width=width/float(n), align="edge")
-        plt.xticks(_X, X)
+    N = 3
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.27       # the width of the bars
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    yvals = A
+    rects1 = ax.bar(ind, yvals, width)
+    zvals = B
+    rects2 = ax.bar(ind+width, zvals, width)
+    ax.set_ylabel('Percentage')
+    ax.set_xticks(ind+width)
+    ax.set_xticklabels( ('Non Toxic','Maybe Toxic','Toxic') )
+    ax.legend( (rects1[0], rects2[0]), ("Original", "Perturbed") )
+    ax.set_ylim([0,100])
+    #ax.ylim([0, 100])
+    
+    def autolabel(rects):
+        for rect in rects:
+            h = rect.get_height()
+            ax.text(rect.get_x()+rect.get_width()/2., 1.05*h, '%.1f'%float(h),
+                    ha='center', va='bottom')
 
-    subcategorybar(X, [A,B])
-    plt.ylim([0, 100])
-    plt.legend(["Original", "Perturbed"],loc=2)
+    autolabel(rects1)
+    autolabel(rects2)   
     plt.show()
 
     
