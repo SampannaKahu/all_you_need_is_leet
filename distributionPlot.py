@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import evaluation
+import pandas as pd
+
 
 def dataDistribution():
     originalFile = open("data/mondal_json_v2", "r")
@@ -51,5 +53,26 @@ def parameterVis():
     plt.plot(docs, scores, marker='o', color='b')
     plt.show()
     
+def bucketVis():
+    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_nows_toxicity")
+    
+    X = ['Non Toxic','Maybe Toxic','Toxic']
+    
+    A = [(o1/oTotal)*100, (o2/oTotal)*100, (o3/oTotal)*100]
+    B = [(p1/pTotal)*100, (p2/pTotal)*100, (p3/pTotal)*100]
+    
+    def subcategorybar(X, vals, width=0.8):
+        n = len(vals)
+        _X = np.arange(len(X))
+        for i in range(n):
+            plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
+                    width=width/float(n), align="edge")
+        plt.xticks(_X, X)
+
+    subcategorybar(X, [A,B])
+    plt.ylim([0, 100])
+    plt.legend(["Original", "Perturbed"],loc=2)
+    plt.show()
+
     
     
