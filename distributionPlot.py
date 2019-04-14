@@ -40,14 +40,16 @@ def dataDistribution():
 def parameterVis():
     originalFile = "mondal_json_v2"
     scores = []
-    for i in range(1,7):
+    for i in range(1,9):
         pFile = "mondal_json_" + str(i) + "c_leetspeak_toxicity"
         scores.append(evaluation.evaluation(originalFile, pFile))
     print(scores)
-    docs = np.arange(1, 7, 1)
+    docs = np.arange(1, 9, 1)
     plt.xticks(docs)
     plt.xlabel("Number of characters changed")
     plt.ylabel("Mean decrease in toxicity score")
     plt.plot(docs, scores, marker='o', color='b')
     plt.show()
+    
+    
     

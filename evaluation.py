@@ -46,6 +46,31 @@ def evaluation(originalFile, perturbedFile):
     print("Average change in toxicity score: {}\n".format((totalOrginalScore - totalPerturbedScore)/totalEvals))
     
     return (totalOrginalScore - totalPerturbedScore)/totalEvals
+
+def getEval():
+    perturbedFile1 = open("perturbed_data/" + "mondal_json_4c_leetspeak_toxicity")
+    perturbedFile2 = open("perturbed_data/" + "mondal_json_5c_leetspeak_toxicity")
+    outputFile = open("perturbed_data/" + "dummy", 'w')
+
+    
+    
+    p1Tweets = perturbedFile1.read().splitlines()
+    p2Tweets = perturbedFile2.read().splitlines()
+    
+    for i in range(len(p1Tweets)):
+        
+        p1LineNumber = p1Tweets[i].split(',')[0]
+        p1Score = p1Tweets[i].split(',')[1]
+        
+        p2Score = p2Tweets[int(p1LineNumber) - 1].split(',')[1]
+    #    if(float(oScore) < 0.5):
+    #        continue
+        if(p1Score < p2Score):
+            outputFile.write("%s," % p1Score)
+            outputFile.write("%s\n" % p1Tweets[i].split(',')[2])
+            outputFile.write("%s," % p2Score)
+            outputFile.write("%s\n" % p2Tweets[int(p1LineNumber) - 1].split(',')[2])
+            outputFile.write("\n")
     
     
     
