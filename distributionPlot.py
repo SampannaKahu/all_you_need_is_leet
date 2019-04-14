@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import evaluation
+import pandas as pd
+
 
 def dataDistribution():
     originalFile = open("data/mondal_json_v2", "r")
@@ -51,5 +53,39 @@ def parameterVis():
     plt.plot(docs, scores, marker='o', color='b')
     plt.show()
     
+def bucketVis():
+    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_nows_toxicity")
+    
+    
+    A = [(o1/oTotal)*100, (o2/oTotal)*100, (o3/oTotal)*100]
+    B = [(p1/pTotal)*100, (p2/pTotal)*100, (p3/pTotal)*100]
+    
+    N = 3
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.27       # the width of the bars
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    
+    yvals = A
+    rects1 = ax.bar(ind, yvals, width)
+    zvals = B
+    rects2 = ax.bar(ind+width, zvals, width)
+    ax.set_ylabel('Percentage')
+    ax.set_xticks(ind+width)
+    ax.set_xticklabels( ('Non Toxic','Maybe Toxic','Toxic') )
+    ax.legend( (rects1[0], rects2[0]), ("Original", "Perturbed") )
+    ax.set_ylim([0,100])
+    #ax.ylim([0, 100])
+    
+    def autolabel(rects):
+        for rect in rects:
+            h = rect.get_height()
+            ax.text(rect.get_x()+rect.get_width()/2., 1.05*h, '%.1f'%float(h),
+                    ha='center', va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)   
+    plt.show()
+
     
     
