@@ -29,7 +29,7 @@ num = 1
 exNum = 0
 # Initialize the service client
 service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file="cache/word_toxicity_scores_v2.json")
-
+print("Using API Key: " + API_KEY)
 for line in lines:
     if(num % 500 == 0):
         print(str(num) + " tweets processed\n")

@@ -51,7 +51,9 @@ def parameterVis():
     plt.xlabel("Number of characters changed")
     plt.ylabel("Mean decrease in toxicity score")
     plt.plot(docs, scores, marker='o', color='b')
+    plt.savefig("figures/leetspeak_c_plot", dpi=300)
     plt.show()
+    
     
 def bucketVis():
     o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_nows_toxicity")
