@@ -10,6 +10,7 @@ parser.add_argument("-p", "--perturbed", dest="perturbed",
 
 args = parser.parse_args()
 
+#evaluation("mondal_json_v2", "mondal_json_nows_toxicity")
 def evaluation(originalFile, perturbedFile):
     originalFile = open("data/" + originalFile)
     perturbedFile = open("perturbed_data/" + perturbedFile)
@@ -110,5 +111,26 @@ def bucketDistribution(originalFile, perturbedFile):
     
     return o1, o2, o3, p1, p2, p3, oTotal, pTotal
     
+def bucketShift(originalFile, perturbedFile):
+    originalFile = open("data/" + originalFile)
+    perturbedFile = open("perturbed_data/" + perturbedFile)
     
+    originalTweets = originalFile.read().splitlines()
+    perturbedTweets = perturbedFile.read().splitlines()
+    
+    totalShifts = 0
+    
+    for i in range(len(perturbedTweets)):
+        
+        pLineNumber = perturbedTweets[i].split(',')[0]
+    
+        oScore = originalTweets[int(pLineNumber) - 1].split(',')[1]
+        pScore = perturbedTweets[i].split(',')[1]
+        
+        if(float(oScore) > 0.62 and float(pScore) <= 62):
+            totalShifts += 1
+        
+    print("Percentage Shifts from Bucket 3: {}\n".format((totalShifts/ len(perturbedTweets)*100)))
+        
+        
         
