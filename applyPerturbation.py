@@ -13,7 +13,9 @@ tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=Fals
 
 def find_most_toxic_words(my_dict):
     sorted_dict = sorted(my_dict.items(), key=operator.itemgetter(1), reverse=True)
-    return [sorted_dict[0][0]]
+    # if len(sorted_dict) < 4:
+    #     return [sorted_dict[0][0], sorted_dict[1][0], sorted_dict[2][0]]
+    return [sorted_dict[0][0], sorted_dict[1][0]]
 
 
 def replace_word(original_sentence, original_word, new_word):
@@ -27,8 +29,9 @@ def replace_word(original_sentence, original_word, new_word):
 def insertLeetSpeak():
     count = 0
     i = 1
+    countSame = 0
     with open('data/mondal_json_toxicity.csv') as input_file:
-        with open('perturbed_data/mondal_json_8c_leetspeak', mode='w') as output_file:
+        with open('perturbed_data/mondal_json_leetspeak_2w', mode='w') as output_file:
             reader = csv.reader(input_file, delimiter=',')
             for row in reader:
                 count += 1
@@ -39,8 +42,11 @@ def insertLeetSpeak():
                 most_toxic_words = find_most_toxic_words(toxicity_dict)
                 perturbed_tweet = tweet
                 for word in most_toxic_words:
-                    perturbed_word = leetSpeak.word2Leet(word, 8)
-                    perturbed_tweet = replace_word(tweet, word, perturbed_word)
+                    perturbed_word = leetSpeak.word2Leet(word, len(word))
+                    perturbed_tweet = replace_word(perturbed_tweet, word, perturbed_word)
+                if (perturbed_tweet == tweet):
+                    countSame += 1
+                    print(str(countSame) + " " + tweet + " unchanged")
                 output_file.write(str(i) + ',0,' + perturbed_tweet)
                 i += 1
 
@@ -113,4 +119,4 @@ def insertZwsp():
 if __name__ == "__main__":
     pass
     # Call the function that you want to run here.
-    # insertZwsp()
+    # insertLeetSpeak()
