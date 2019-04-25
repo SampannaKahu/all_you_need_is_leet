@@ -90,9 +90,9 @@ def bucketDistribution(originalFile, perturbedFile):
         
         oScore = originalTweets[i].split(',')[1]
         
-        if (float(oScore) < 0.32):
+        if (float(oScore) < 0.33):
             o1 += 1
-        elif(float(oScore) < 0.62):
+        elif(float(oScore) < 0.66):
             o2 += 1
         else:
             o3 += 1
@@ -101,15 +101,37 @@ def bucketDistribution(originalFile, perturbedFile):
         
         pScore = perturbedTweets[i].split(',')[1]
         
-        if (float(pScore) < 0.32):
+        if (float(pScore) < 0.33):
             p1 += 1
-        elif(float(pScore) < 0.62):
+        elif(float(pScore) < 0.66):
             p2 += 1
         else:
             p3 += 1
     
     
     return o1, o2, o3, p1, p2, p3, oTotal, pTotal
+
+def initialDataBucketDistribution(originalFile):
+    originalFile = open("data/" + originalFile)
+    
+    originalTweets = originalFile.read().splitlines()
+    
+    
+    o1 = o2 = o3 = 0
+    oTotal = len(originalTweets)
+    
+    for i in range(len(originalTweets)):
+        
+        oScore = originalTweets[i].split(',')[1]
+        
+        if (float(oScore) < 0.33):
+            o1 += 1
+        elif(float(oScore) < 0.66):
+            o2 += 1
+        else:
+            o3 += 1
+    
+    return o1, o2, o3,oTotal
     
 def bucketShift(originalFile, perturbedFile):
     originalFile = open("data/" + originalFile)
@@ -127,9 +149,9 @@ def bucketShift(originalFile, perturbedFile):
         oScore = originalTweets[int(pLineNumber) - 1].split(',')[1]
         pScore = perturbedTweets[i].split(',')[1]
         
-        if(float(oScore) > 0.62 and float(pScore) <= 62):
+        if(float(oScore) > 0.66 and float(pScore) <= 0.66):
             totalShifts += 1
-        
+
     print("Percentage Shifts from Bucket 3: {}\n".format((totalShifts/ len(perturbedTweets)*100)))
         
         

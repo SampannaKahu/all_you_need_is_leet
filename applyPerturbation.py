@@ -107,7 +107,7 @@ def insertZwsp():
                 most_toxic_words = find_most_toxic_words(toxicity_dict)
                 perturbed_tweet = tweet
                 for word in most_toxic_words:
-                    perturbed_word = "".join([c + 5 * u'\u200b' for c in word])
+                    perturbed_word = "".join([c + 50 * u'\u200b' for c in word])
                     perturbed_tweet = replace_word(perturbed_tweet, word, perturbed_word)
                 if (perturbed_tweet == tweet):
                     countSame += 1
