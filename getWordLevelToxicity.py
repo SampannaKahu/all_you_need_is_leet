@@ -6,25 +6,27 @@ import json
 
 from nltk.tokenize import TweetTokenizer
 
-from PerspectiveServiceClient import PerspectiveAPIClient
+# from PerspectiveServiceClient import PerspectiveAPIClient
+from HatesonarServiceClient import HatesonarAPIClient
 import CredentialManager
 
 API_KEY = CredentialManager.get_my_api_key()
 
 # Initialize the service client
-service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
+# service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
+service_client = HatesonarAPIClient()
 # Initialize tokenizer.
 tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=False)
 
 
-def get_word_toxicities(sentence):
-    # words = sentence.split(' ')
-    words = tknzr.tokenize(sentence)
-    chunks = [words[x:x + 9] for x in range(0, len(words), 9)]
-    my_dict = {}
-    for chunk in chunks:
-        my_dict = {**my_dict, **service_client.get_toxicity_of_words(chunk)}
-    return my_dict
+# def get_word_toxicities(sentence):
+#     # words = sentence.split(' ')
+#     words = tknzr.tokenize(sentence)
+#     chunks = [words[x:x + 9] for x in range(0, len(words), 9)]
+#     my_dict = {}
+#     for chunk in chunks:
+#         my_dict = {**my_dict, **service_client.get_toxicity_of_words(chunk)}
+#     return my_dict
 
 i = 0
 with open('data/mondal_json_toxicity') as input_file:

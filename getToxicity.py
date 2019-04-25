@@ -9,7 +9,8 @@ Created on Tue Mar 26 21:22:27 2019
 from argparse import ArgumentParser
 import CredentialManager
 
-from PerspectiveServiceClient import PerspectiveAPIClient
+# from PerspectiveServiceClient import PerspectiveAPIClient
+from HatesonarServiceClient import HatesonarAPIClient
 
 API_KEY = CredentialManager.get_my_api_key()
 
@@ -21,14 +22,15 @@ args = parser.parse_args()
 
 # Open a file
 inputFile = open(args.input, "r")
-outputFileName = args.input + "_toxicity"
+outputFileName = args.input + "_toxicity_hatesonar"
 outputFile = open(outputFileName, 'w')
 
 lines = inputFile.read().splitlines()
 num = 1
 exNum = 0
 # Initialize the service client
-service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file="cache/word_toxicity_scores_v2.json")
+# service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file="cache/word_toxicity_scores_v2.json")
+service_client =  HatesonarAPIClient()
 print("Using API Key: " + API_KEY)
 for line in lines:
     if(num % 500 == 0):
