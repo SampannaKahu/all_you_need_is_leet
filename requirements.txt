@@ -1,2 +1,7 @@
+pandas
+nltk
+matplotlib
+numpy
+googleapiclient
 google-api-python-client
 ratelimit
