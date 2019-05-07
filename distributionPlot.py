@@ -57,7 +57,7 @@ def parameterVis():
     
     
 def bucketVis(filename):
-    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_zwsp_toxicity")
+    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mergedAttack_toxicity")
     
     
     A = [(o1/oTotal)*100, (o2/oTotal)*100, (o3/oTotal)*100]
@@ -65,7 +65,7 @@ def bucketVis(filename):
     
     N = 3
     ind = np.arange(N)  # the x locations for the groups
-    width = 0.27       # the width of the bars
+    width = 0.27       # the width of the barsmondal_json_zwsp_toxicity
     fig = plt.figure()
     ax = fig.add_subplot(111)
     

@@ -11,7 +11,7 @@ from ratelimit import limits, sleep_and_retry
 
 
 @sleep_and_retry
-@limits(calls=8, period=1)
+@limits(calls=48, period=1)
 def call_api(service, analyze_request):
     try:
         return service.comments().analyze(body=analyze_request).execute()
