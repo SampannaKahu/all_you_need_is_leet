@@ -14,8 +14,8 @@ tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=Fals
 def find_most_toxic_words(my_dict):
     sorted_dict = sorted(my_dict.items(), key=operator.itemgetter(1), reverse=True)
     # if len(sorted_dict) < 4:
-    #     return [sorted_dict[0][0], sorted_dict[1][0], sorted_dict[2][0]]
-    return [sorted_dict[0][0], sorted_dict[1][0]]
+    return [sorted_dict[0][0], sorted_dict[1][0], sorted_dict[2][0]]
+    #return [sorted_dict[0][0], sorted_dict[1][0]]
 
 
 def replace_word(original_sentence, original_word, new_word):
@@ -107,7 +107,7 @@ def insertZwsp():
                 most_toxic_words = find_most_toxic_words(toxicity_dict)
                 perturbed_tweet = tweet
                 for word in most_toxic_words:
-                    perturbed_word = "".join([c + 50 * u'\u200b' for c in word])
+                    perturbed_word = "".join([c + 5 * u'\u200b' for c in word])
                     perturbed_tweet = replace_word(perturbed_tweet, word, perturbed_word)
                 if (perturbed_tweet == tweet):
                     countSame += 1
@@ -115,7 +115,47 @@ def insertZwsp():
                 output_file.write(str(i) + ',0,' + perturbed_tweet)
                 i += 1
 
-
+def mergeLeetSpeakUnderscores():
+    line = 1
+    with open('perturbed_data/mergedAttack', mode='w') as output_file:
+        originalFile = open("perturbed_data/" + "mondal_json_leetspeak_3w")     
+        
+        originalTweets = originalFile.read().splitlines()
+        
+        for i in range(len(originalTweets)):
+            oTweet = originalTweets[i].split(',')[2:]
+            oTweet = ','.join(oTweet)
+            oTweet = oTweet.replace(' ', '_')
+            output_file.write(str(line) + ',0,' + oTweet + '\n')
+            line += 1
+            
+def mergeLeetZws():
+    count = 0
+    i = 1
+    countSame = 0
+    with open('data/mondal_json_toxicity.csv') as input_file:
+        with open('perturbed_data/mondal_json_leetspeak_3w_zws', mode='w') as output_file:
+            reader = csv.reader(input_file, delimiter=',')
+            for row in reader:
+                count += 1
+                if(count % 1000 == 0):
+                    print (str(count) + " done")
+                tweet = row[0]
+                toxicity_dict = json.loads(row[1])
+                most_toxic_words = find_most_toxic_words(toxicity_dict)
+                perturbed_tweet = tweet
+                for word in most_toxic_words:
+                    
+                    perturbed_word = leetSpeak.word2Leet(word, len(word))
+                    perturbed_word = "".join([c + 5 * u'\u200b' for c in perturbed_word])
+                    perturbed_tweet = replace_word(perturbed_tweet, word, perturbed_word)
+                if (perturbed_tweet == tweet):
+                    countSame += 1
+                    print(str(countSame) + " " + tweet + " unchanged")
+                output_file.write(str(i) + ',0,' + perturbed_tweet)
+                i += 1
+            
+            
 if __name__ == "__main__":
     pass
     # Call the function that you want to run here.

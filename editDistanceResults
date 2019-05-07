@@ -1,0 +1,19 @@
+mondal_json_leetspeak_3w_toxicity
+14.106176826806621
+0.2104150286408244
+mondal_json_nows_toxicity
+9.867753846153846
+0.15199287449086432
+mondal_json_typos_toxicity
+3.723921409763014
+0.08061688804414142
+mondal_json_underscores_toxicity
+10.010062702265373
+0.15349916539473119
+mondal_json_zwsp_toxicity
+34.8302308652246
+10.473983184218833
+
+
+Average change in toxicity score: 0.4241308061456468
+Percentage Shifts from Bucket 3: 79.76765944175894
