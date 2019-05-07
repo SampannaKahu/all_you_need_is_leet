@@ -57,7 +57,7 @@ def parameterVis():
     
     
 def bucketVis(filename):
-    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mergedAttack_toxicity")
+    o1, o2, o3, p1, p2, p3, oTotal, pTotal = evaluation.bucketDistribution("mondal_json_v2", "mondal_json_leetspeak_3w_zws_toxicity")
     
     
     A = [(o1/oTotal)*100, (o2/oTotal)*100, (o3/oTotal)*100]
