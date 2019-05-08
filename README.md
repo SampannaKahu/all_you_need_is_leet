@@ -1,7 +1,10 @@
 # N0t_Hate_5peech
 
+## Overview:
+![alt text](./process_overview.png "Logo Title Text 1")
+
 ## To generate toxicity scores:
-input file format: 0,text
+
 ```bash
 python getToxicity.py -i <inputfilename>
 ```
