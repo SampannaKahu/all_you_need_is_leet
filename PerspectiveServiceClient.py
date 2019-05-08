@@ -8,10 +8,11 @@ import copy
 from googleapiclient import discovery
 from googleapiclient.errors import HttpError
 from ratelimit import limits, sleep_and_retry
+from itertools import islice
 
 
 @sleep_and_retry
-@limits(calls=8, period=1)
+@limits(calls=45, period=1)
 def call_api(service, analyze_request):
     try:
         return service.comments().analyze(body=analyze_request).execute()
@@ -104,6 +105,67 @@ class PerspectiveAPIClient:
 
         # Return toxicity dict
         return {**cache_toxicities, **response_toxicities}
+
+    def get_toxicity_of_words_using_span(self, list_of_words=None):
+        # Some sanity checks.
+        if not list_of_words or not isinstance(list_of_words, list) or len(list_of_words) == 0:
+            raise ValueError('Please pass a valid list of words.')
+
+        # De-duplicate
+        list_of_words = list(set(list_of_words))
+
+        my_dict = {}
+        for word in list_of_words:
+            my_dict[word] = word.strip().strip('.').lower().capitalize()
+
+        chunks = self.chunks(my_dict)
+        result = {}
+        for chunk in chunks:
+            result = {**result, **self.get_span_toxicities(chunk)}
+
+    def chunks(self, data, SIZE=10):
+        it = iter(data)
+        for i in range(0, len(data), SIZE):
+            yield {k: data[k] for k in islice(it, SIZE)}
+
+    # def get_span_toxicities(self, dict_of_words=None):
+    #
+    #     capitalized_sentence = '. '.join(capitalized_list_of_words)
+    #
+    #     analyze_request = {
+    #         'comment': {'text': capitalized_sentence},
+    #         'requestedAttributes': {'TOXICITY': {}},
+    #         'spanAnnotations': True
+    #     }
+    #
+    #     response = call_api(self.service, analyze_request)
+    #
+    #     try:
+    #         span_scores = response['attributeScores']['TOXICITY']['spanScores']
+    #     except TypeError:
+    #         print('Type error encountered. Response:', response)
+    #         return {}
+    #
+    # pass
+
+    def yolo(self, list_of_words=None):
+        list_of_words = [x.strip().strip('.').strip(',') for x in list_of_words if x.strip().strip('.').strip(',')]
+
+        for i in range(0, len(list_of_words), 10):
+            sentence_words = list_of_words[i:min(i + 10, len(list_of_words))]
+            sentence_words = [word.capitalize() for word in sentence_words]
+
+            analyze_request = {
+                'comment': {'text': '. '.join(sentence_words)},
+                'requestedAttributes': {'TOXICITY': {}},
+                'spanAnnotations': True
+            }
+
+            response = call_api(self.service, analyze_request)
+            span_scores = response['attributeScores']['TOXICITY']['spanScores']
+            if len(span_scores) is not len(sentence_words):
+                print('Number of span scores in response are lesser than request.')
+        pass
 
     def get_toxicity_for_sentence(self, sentence=None):
         """

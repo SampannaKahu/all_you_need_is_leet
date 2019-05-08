@@ -6,18 +6,18 @@ import json
 
 from nltk.tokenize import TweetTokenizer
 
-# from PerspectiveServiceClient import PerspectiveAPIClient
-from HatesonarServiceClient import HatesonarAPIClient
+from PerspectiveServiceClient import PerspectiveAPIClient
+# from HatesonarServiceClient import HatesonarAPIClient
 import CredentialManager
 
 API_KEY = CredentialManager.get_my_api_key()
 
 # Initialize the service client
-# service_client = PerspectiveAPIClient(api_key=API_KEY, cache_file='cache/word_toxicity_scores_v2.json')
-service_client = HatesonarAPIClient()
+service_client = PerspectiveAPIClient(api_key=API_KEY,
+                                      cache_file='cache/word_toxicity_scores_for_mondal_json_v2_lowercased_using_span.json')
+# service_client = HatesonarAPIClient()
 # Initialize tokenizer.
 tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=False)
-
 
 # def get_word_toxicities(sentence):
 #     # words = sentence.split(' ')
@@ -29,8 +29,8 @@ tknzr = TweetTokenizer(preserve_case=False, reduce_len=False, strip_handles=Fals
 #     return my_dict
 
 i = 0
-with open('data/mondal_json_toxicity') as input_file:
-    with open('data/mondal_json_toxicity.csv', mode='w') as output_file:
+with open('data/mondal_json_v2_lowercased') as input_file:
+    with open('data/mondal_json_toxicity_lowercased_span.csv', mode='w') as output_file:
         output_fieldnames = ['tweets', 'word_level_score_dict', 'score']
         writer = csv.DictWriter(output_file, fieldnames=output_fieldnames)
         writer.writeheader()
@@ -46,11 +46,10 @@ with open('data/mondal_json_toxicity') as input_file:
                 writer.writerow({
                     'tweets': tweet,
                     'word_level_score_dict': json.dumps(
-                        service_client.get_toxicity_of_words_v2(list_of_words=words,
-                                                                original_toxicity=original_toxicity)),
-                            'score': original_toxicity
+                        service_client.get_toxicity_of_words(list_of_words=words)),
+                    'score': original_toxicity
                 })
-            except ValueError:
+            except ValueError as e:
                 print('Error for tweet: ', tweet)
             tweet = input_file.readline()
-            #print('Processing...')
+            # print('Processing...')
