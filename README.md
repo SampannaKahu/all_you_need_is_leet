@@ -1,4 +1,5 @@
-# N0t_Hate_5peech
+# All You Need is "Leet": Evading Hate-speech Detection AI
+Previously named: N0t_Hate_5peech
 
 ## Overview:
 ![alt text](./process_overview.png "Logo Title Text 1")
